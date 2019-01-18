@@ -33,8 +33,12 @@ In order for your project to be reviewed, the grader needs to be able to log in 
 ## Prepare to deploy your project.
 9. Configure the local timezone to UTC.
 10. Install and configure Apache to serve a Python mod_wsgi application.
- * If you built your project with Python 3, you will need to install the Python 3 mod_wsgi package on your server: ```cmd $ sudo apt-get install libapache2-mod-wsgi-py3```.
+ * If you built your project with Python 3, you will need to install the Python 3 mod_wsgi package on your server: ```$ sudo apt-get install libapache2-mod-wsgi-py3```.
 11. Install and configure PostgreSQL:
  * Do not allow remote connections
  * Create a new database user named catalog that has limited permissions to your catalog application database.
-12. Install git.
+12. Install git.i
+
+## Deploy the Item Catalog project.
+13. Clone and setup your Item Catalog project from the Github repository you created earlier in this Nanodegree program.
+14. Set it up in your server so that it functions correctly when visiting your server’s IP address in a browser. Make sure that your .git directory is not publicly accessible via a browser!
