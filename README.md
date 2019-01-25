@@ -29,7 +29,8 @@ In order for your project to be reviewed, the grader needs to be able to log in 
 ### Prepare to deploy your project.
 9. Configure the local timezone to UTC.
 10. Install and configure Apache to serve a Python mod_wsgi application.
- * If you built your project with Python 3, you will need to install the Python 3 mod_wsgi package on your server: ```$ sudo apt-get install libapache2-mod-wsgi-py3```.
+ * If you built your project with Python 3, you will need to install the Python 3 mod_wsgi package on your server: 
+ * ```$ sudo apt-get install libapache2-mod-wsgi-py3```.
 11. Install and configure PostgreSQL:
  * Do not allow remote connections
  * Create a new database user named catalog that has limited permissions to your catalog application database.
@@ -37,3 +38,24 @@ In order for your project to be reviewed, the grader needs to be able to log in 
 ### Deploy the Item Catalog project.
 13. Clone and setup your Item Catalog project from the Github repository you created earlier in this Nanodegree program.
 14. Set it up in your server so that it functions correctly when visiting your server’s IP address in a browser. Make sure that your .git directory is not publicly accessible via a browser!
+
+## Requirements
+1. Github repository with [README.md](README.md).
+2. Your README.md file should include all of the following:
+ -  i. The IP address and SSH port so your server can be accessed by the reviewer.
+  * IP: 35.166.158.167 Port: 2200
+ - ii. The complete URL to your hosted web application.
+        
+ - iii. A summary of software you installed and configuration changes made.
+  1. Firewall Setup 
+   * `sudo ufw allow 2200/tcp`
+   * `sudo ufw allow 80/tcp`
+   * `sudo ufw allow 123/udp`
+   * `sudo ufw enable`
+
+ - iv. A list of any third-party resources you made use of to complete this project.
+    
+3. Locate the SSH key you created for the grader user.
+
+4. During the submission process, paste the contents of the grader user's SSH key into the "Notes to Reviewer" field.
+
