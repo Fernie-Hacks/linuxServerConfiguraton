@@ -40,35 +40,35 @@ In order for your project to be reviewed, the grader needs to be able to log in 
 14. Set it up in your server so that it functions correctly when visiting your server’s IP address in a browser. Make sure that your .git directory is not publicly accessible via a browser!
 
 ## Log in details for grader
-* IP: 34.221.14.169
+* IP: 54.186.49.169
 * Port: 2200
-* URL: [http://ec2-34-221-14-169.us-west-2.compute.amazonaws.com/](http://ec2-34-221-14-169.us-west-2.compute.amazonaws.com/)
+* URL: [http://ec2-54-186-49-169.us-west-2.compute.amazonaws.com/](http://ec2-54-186-49-169.us-west-2.compute.amazonaws.com/)
 
 ## Requirements
 Below is a set of requirements with steps on how they were achieved 
 1. Github repository with [README.md](README.md).
 2. Your README.md file should include all of the following:
     * i. The IP address and SSH port so your server can be accessed by the reviewer.
-        * IP: 35.166.158.167 Port: 2200
+        * IP: 54.186.49.169 Port: 2200
     * ii. The complete URL to your hosted web application.    
-        * URL:[http://ec2-34-221-14-169.us-west-2.compute.amazonaws.com/](http://ec2-34-221-14-169.us-west-2.compute.amazonaws.com/)
+        * URL: URL: [http://ec2-54-186-49-169.us-west-2.compute.amazonaws.com/](http    ://ec2-54-186-49-169.us-west-2.compute.amazonaws.com/)
     * iii. A summary of software you installed and configuration changes made.
         * Linux Machine Software
-            * Update: `sudo apt-get updatee`
+            * Update: `sudo apt-get update`
             * Upgrade: `sudo apt-get upgrade`
             * Finger: `sudo apt-get install finger`
             * NTP: `sudo apt-get install ntp`
         * Grader User Setup
             * Create user: `sudo adduser grader`
             * Grant user permission to execute sudo command by running: `sudo vim /etc/sudoers.d/grader`
-            * Add the following line in the file `grader ALL=(ALL:ALL) ALL`
+            * Add the following line in the file `grader ALL=(ALL) NOPASSWD:ALL`
         * Configure key-based authentication
             * Create ssh-key on your personal machine by running: `sshkey-gen -f ~/.ssh/someFilename`
             * Switch to the grader user by running: `su grader`
             * Copy the contents of the public key on your machine to the remote lightsail ubuntu machine `cat ~/.ssh/someFilename.pub`
             * Paste it in under the user grader's authorized_keys file: `vim ~/.ssh/authorized_keys`
             * Change the file permissions to the following: `sudo chmod 700 ~/.ssh` & `sudo chmod 644 ~/.ssh/authorized_keys`
-            * Verify it is working by remote logging in to grader using the private key `ssh -i ~/.ssh/lightsail grader@34.221.14.169`
+            * Verify it is working by remote logging in to grader using the private key `ssh -i ~/.ssh/lightsail grader@54.186.49.169`
        * SSH Configurations
             * Edit the following file `sudo vim /etc/ssh/sshd_config`
             * Disable password based authentication by giving the value of no to the Password Authentication variable ex: `PasswordAuthentication no` 
@@ -77,14 +77,15 @@ Below is a set of requirements with steps on how they were achieved
             * Restart the SSH service: `sudo service ssh restart`
        * Firewall Setup
             * `sudo ufw allow 2200/tcp`
-            * `sudo ufw allow 80/tcp`
-            * `sudo ufw allow 123/udp`
+            * `sudo ufw allow www`
+            * `sudo ufw allow ntp`
             * `sudo ufw enable`
        * Apache Install & Other Server Requirements
             * `sudo apt-get install apache2`
             * Install mod-wsgi `sudo apt-get install libapache2-mod-wsgi python-dev`
             * Enable wsgi: `sudo a2enmod wsgi`
             * Create app folder `sudo mkdir -p /var/www/catalog`
+            * Change owner of the new folder `sudo chown -R grader:grader catalog`
             * Create wsgi file for the app (catalog.wsgi) inside he catalog folder and add the below code:
                 ```
                 import sys
@@ -92,10 +93,34 @@ Below is a set of requirements with steps on how they were achieved
                 logging.basicConfig(stream=sys.stderr)
                 sys.path.insert(0, "/var/www/catalog/")
                 from catalog import app as application
-                application.secret_key = ''
+                application.secret_key = 'secret_key_for_github'
                 ```
             * Copy catalog project inside the catalog folder `git clone https://github.com/Fernie-Hacks/catalogProject.git`
+            * Move catalog project only folder to the current folder `m    v catalogProject/catalog .`
             * Rename application name `mv views.py  __init__.py`
+            * Create catalog apache2 config under
+              ```
+              <VirtualHost *:80>
+                ServerName 54.186.49.169
+                ServerAlias http://ec2-54-186-49-169.us-west-2.compute.amazonaws.com
+                ServerAdmin admin@54.186.49.169
+                WSGIDaemonProcess catalog python-path=/var/www/catalog:/var/www/catalog/venv/lib/python2.7/site-packages
+                WSGIProcessGroup catalog
+                WSGIScriptAlias / /var/www/catalog/catalog.wsgi
+                <Directory /var/www/catalog/catalog/>
+                    Order allow,deny
+                    Allow from all
+                </Directory>
+                Alias /static /var/www/catalog/catalog/static
+                <Directory /var/www/catalog/catalog/static/>
+                    Order allow,deny
+                    Allow from all
+                </Directory>
+                ErrorLog ${APACHE_LOG_DIR}/error.log
+                LogLevel warn
+                CustomLog ${APACHE_LOG_DIR}/access.log combined
+              </VirtualHost>
+              ```
         * Virtual Environment Setup
             * `sudo apt install python-pip`
             * `sudo pip install virtualenv`
