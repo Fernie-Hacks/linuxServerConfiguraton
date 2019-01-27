@@ -42,7 +42,7 @@ In order for your project to be reviewed, the grader needs to be able to log in 
 ## Log in details for grader
 * IP: 54.186.49.169
 * Port: 2200
-* URL: [http://ec2-54-186-49-169.us-west-2.compute.amazonaws.com/](http://ec2-54-186-49-169.us-west-2.compute.amazonaws.com/)
+* URL: [https://ec2-54-186-49-169.us-west-2.compute.amazonaws.com/](https://ec2-54-186-49-169.us-west-2.compute.amazonaws.com/)
 
 ## Requirements
 Below is a set of requirements with steps on how they were achieved 
