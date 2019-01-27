@@ -51,7 +51,7 @@ Below is a set of requirements with steps on how they were achieved
     * i. The IP address and SSH port so your server can be accessed by the reviewer.
         * IP: 54.186.49.169 Port: 2200
     * ii. The complete URL to your hosted web application.    
-        * URL: URL: [http://ec2-54-186-49-169.us-west-2.compute.amazonaws.com/](http    ://ec2-54-186-49-169.us-west-2.compute.amazonaws.com/)
+        * URL: [http://ec2-54-186-49-169.us-west-2.compute.amazonaws.com/](http://ec2-54-186-49-169.us-west-2.compute.amazonaws.com/)
     * iii. A summary of software you installed and configuration changes made.
         * Linux Machine Software
             * Update: `sudo apt-get update`
