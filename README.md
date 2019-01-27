@@ -79,6 +79,9 @@ Below is a set of requirements with steps on how they were achieved
             * `sudo ufw allow 2200/tcp`
             * `sudo ufw allow www`
             * `sudo ufw allow ntp`
+            * `sudo ufw allow 'Apache Full'`
+            * `sudo ufw allow https`
+            * Make sure to enable same ports on EC2 lightsail portal under your instance > Netwroking > Firewall
             * `sudo ufw enable`
        * Apache Install & Other Server Requirements
             * `sudo apt-get install apache2`
@@ -102,6 +105,17 @@ Below is a set of requirements with steps on how they were achieved
               ```
               <VirtualHost *:80>
                 ServerName 54.186.49.169
+                Redirect / https://ec2-54-186-49-169.us-west-2.compute.amazonaws.com
+              </VirtualHost>
+
+              <VirtualHost *:443>
+                ServerName 54.186.49.169
+                ServerAlias http://ec2-54-186-49-169.us-west-2.compute.amazonaws.com
+                ServerAdmin admin@54.186.49.169
+                SSLEngine on
+                SSLCertificateFile "/etc/ssl/certs/apache-selfsigned.crt"
+                SSLCertificateKeyFile "/etc/ssl/private/apache-selfsigned.key"
+                ServerName 54.186.49.169
                 ServerAlias http://ec2-54-186-49-169.us-west-2.compute.amazonaws.com
                 ServerAdmin admin@54.186.49.169
                 WSGIDaemonProcess catalog python-path=/var/www/catalog:/var/www/catalog/venv/lib/python2.7/site-packages
@@ -121,6 +135,8 @@ Below is a set of requirements with steps on how they were achieved
                 CustomLog ${APACHE_LOG_DIR}/access.log combined
               </VirtualHost>
               ```
+            * Enable SSL `sudo a2enmod ssl`
+            * Create certificates `sudo openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/ssl/private/apache-selfsigned.key -out /etc/ssl/certs/apache-selfsigned.crt`
         * Virtual Environment Setup
             * `sudo apt install python-pip`
             * `sudo pip install virtualenv`
@@ -128,24 +144,35 @@ Below is a set of requirements with steps on how they were achieved
             * `source venv/bin/activate`
             * `sudo chmod -R 777 venv`
         * Catalog Project dependencies
-            * `pip install Flask`
-            * `pip install sqlalchemy`
-            * `pip install passlib`
-            * `pip install itsdangerous`
-            * `pip install flask`
-            * `pip install flask-bootstrap`
-            * `pip install flask-httpauth`
-            * `pip install request`
-            * `pip install requests`
-            * `pip install oauth2client`
+            * `sudo pip install Flask`
+            * `sudo pip install sqlalchemy`
+            * `sudo pip install passlib`
+            * `sudo pip install itsdangerous`
+            * `sudo pip install flask`
+            * `sudo pip install flask-bootstrap`
+            * `sudo pip install flask-httpauth`
+            * `sudo pip install request`
+            * `sudo pip install requests`
+            * `sudo pip install oauth2client`
         * PostgreSQL
             * `sudo apt-get install libpq-dev python-dev`
             * `sudo apt-get install postgresql postgresql-contrib`
             * `sudo su - postgres`
             * `psql`
+            * `psql`
+            * `CREATE USER catalog WITH PASSWORD 'password';`
+            * `ALTER USER catalog CREATEDB;`
+            * `CREATE DATABASE catalog WITH OWNER catalog;`
+            * `\c catalog`
+            * `REVOKE ALL ON SCHEMA public FROM public;`
+            * `GRANT ALL ON SCHEMA public TO catalog;`
+            * Change create engine line in your `__init__.py` and `database_setup.py` to: `engine = create_engine('postgresql://catalog:password@localhost/catalog')`
     * iv. A list of any third-party resources you made use of to complete this project.
+        * [Maketecheasier Apache SSL enable](https://www.maketecheasier.com/apache-server-ssl-support/)
+        * [Digital Ocean Redirect to HTTPS](https://www.digitalocean.com/community/tutorials/how-to-create-a-self-signed-ssl-certificate-for-apache-in-ubuntu-16-04)
+        * [Apache Org](https://httpd.apache.org/docs/2.4/ssl/ssl_howto.html#onlystrong)
     
 3. Locate the SSH key you created for the grader user.
-
+    * Done
 4. During the submission process, paste the contents of the grader user's SSH key into the "Notes to Reviewer" field.
-
+    * Done
